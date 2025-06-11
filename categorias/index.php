@@ -1,8 +1,17 @@
 <?php
+// C:\xampp\htdocs\PROYECTO2DS6\categorias\index.php
+
 require '../config/db.php';
 require '../includes/header.php';
 
-// 1) Obtener todas las categorías
+// Solo Admin (rol 01) puede acceder a este módulo
+if ($_SESSION['usuario']['rol'] !== '01') {
+    // Si quieren, redirigir al catálogo público
+    header('Location: ../catalogo/index.php');
+    exit;
+}
+
+// Obtener todas las categorías
 $sql = "SELECT * FROM categorias ORDER BY fecha_creacion DESC";
 $result = $mysqli->query($sql);
 if (!$result) {
@@ -18,10 +27,7 @@ $result->free();
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Categorías</h2>
-    <?php if ($_SESSION['usuario']['rol'] === '01'): ?>
-        <!-- Solo Admin (rol 01) ve el botón para crear -->
-        <a href="create.php" class="btn btn-primary">Nueva Categoría</a>
-    <?php endif; ?>
+    <a href="create.php" class="btn btn-primary">Nueva Categoría</a>
 </div>
 
 <?php if (count($cats) > 0): ?>
@@ -29,10 +35,11 @@ $result->free();
         <table class="table table-striped table-bordered align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Imagen</th>
-                    <th>Fecha Creación</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Imagen</th>
+                    <th scope="col">Fecha Creación</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,12 +53,30 @@ $result->free();
                                     src="<?php echo htmlspecialchars($cat['imagen']); ?>"
                                     alt="Thumb"
                                     style="width:50px; height:50px; object-fit:cover;"
+                                    loading="lazy"
                                 >
                             <?php else: ?>
                                 —
                             <?php endif; ?>
                         </td>
                         <td><?php echo htmlspecialchars($cat['fecha_creacion']); ?></td>
+                        <td>
+                            <a
+                                href="edit.php?id=<?php echo $cat['id']; ?>"
+                                class="btn btn-sm btn-warning me-1"
+                                title="Editar categoría"
+                            >
+                                Editar
+                            </a>
+                            <a
+                                href="delete.php?id=<?php echo $cat['id']; ?>"
+                                class="btn btn-sm btn-danger"
+                                onclick="return confirm('¿Eliminar categoría <?php echo addslashes($cat['nombre']); ?>?');"
+                                title="Eliminar categoría"
+                            >
+                                Eliminar
+                            </a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

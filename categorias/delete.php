@@ -4,13 +4,19 @@
 require '../config/db.php';
 require '../includes/header.php';
 
-// 1) Verificar que venga ID válido
+// 1) Solo Admin
+if ($_SESSION['usuario']['rol'] !== '01') {
+    header('Location: ../catalogo/index.php');
+    exit;
+}
+
+// 2) Validar ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID de categoría no válido.");
 }
-$id = (int)$_GET['id'];
+$id = (int) $_GET['id'];
 
-// 2) Ejecutar DELETE
+// 3) Ejecutar DELETE
 $sql = "DELETE FROM categorias WHERE id = ?";
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
@@ -18,6 +24,7 @@ if (!$stmt) {
 }
 $stmt->bind_param('i', $id);
 if ($stmt->execute()) {
+    // Redirigir de vuelta al listado
     header('Location: index.php');
     exit;
 } else {

@@ -4,94 +4,70 @@
 require '../config/db.php';
 require 'header_catalogo.php';
 
-// 1) Leer parámetros GET: categoría y página
-$catParam  = isset($_GET['cat'])   ? (int)$_GET['cat']   : 0;
-$pageParam = isset($_GET['page'])  ? (int)$_GET['page']  : 1;
-if ($pageParam < 1) {
-    $pageParam = 1;
-}
+// Parámetros GET
+$catParam  = isset($_GET['cat'])  ? (int)$_GET['cat']  : 0;
+$pageParam = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 
-// 2) Cargar todas las categorías para mostrar el grid superior
+// 1) Obtén todas las categorías
 $sqlCats = "SELECT id, nombre, imagen FROM categorias ORDER BY nombre";
 $resCats = $mysqli->query($sqlCats);
-if (!$resCats) {
-    die("Error al obtener categorías: " . $mysqli->error);
-}
 $cats = [];
 while ($fila = $resCats->fetch_assoc()) {
-    $cats[] = $fila; // ['id'], ['nombre'], ['imagen']
+    $cats[] = $fila;
 }
 $resCats->free();
 
-// 3) Preparar paginación para productos
-$porPagina = 9; // mostrar 9 productos por página
-$offset    = ($pageParam - 1) * $porPagina;
-
-// 4) Contar total de productos (aplica filtro de categoría si $catParam > 0)
+// 2) Cuenta total de productos con filtro opcional
+$porPagina = 9;
 if ($catParam > 0) {
-    $sqlCount = "SELECT COUNT(*) AS total 
-                  FROM productos 
-                  WHERE categoria_id = ?";
-    $stmtCount = $mysqli->prepare($sqlCount);
+    $stmtCount = $mysqli->prepare(
+        "SELECT COUNT(*) AS total FROM productos WHERE categoria_id = ?"
+    );
     $stmtCount->bind_param('i', $catParam);
     $stmtCount->execute();
-    $resCount = $stmtCount->get_result();
-    $total    = $resCount->fetch_assoc()['total'];
+    $total = $stmtCount->get_result()->fetch_assoc()['total'];
     $stmtCount->close();
 } else {
-    $sqlCount = "SELECT COUNT(*) AS total FROM productos";
-    $resCount = $mysqli->query($sqlCount);
-    $total    = $resCount->fetch_assoc()['total'];
-    $resCount->free();
+    $total = $mysqli->query("SELECT COUNT(*) AS total FROM productos")
+                    ->fetch_assoc()['total'];
 }
+$totalPaginas = max(1, (int) ceil($total / $porPagina));
+$offset = ($pageParam - 1) * $porPagina;
 
-$totalPaginas = (int) ceil($total / $porPagina);
-if ($totalPaginas < 1) {
-    $totalPaginas = 1;
-}
-
-// 5) Obtener productos de la página actual (con JOIN para traer nombre de categoría)
+// 3) Obtener productos paginados
 if ($catParam > 0) {
-    $sqlProds = "SELECT p.id,
-                        p.nombre   AS prod_nombre,
-                        p.precio,
-                        p.imagen   AS prod_imagen,
-                        c.nombre   AS cat_nombre
-                 FROM productos p
-                 INNER JOIN categorias c ON p.categoria_id = c.id
-                 WHERE p.categoria_id = ?
-                 ORDER BY p.nombre
-                 LIMIT ? OFFSET ?";
-    $stmt = $mysqli->prepare($sqlProds);
+    $stmt = $mysqli->prepare(
+        "SELECT p.id, p.nombre AS prod_nombre, p.precio, p.imagen AS prod_imagen, c.nombre AS cat_nombre
+        FROM productos p
+        JOIN categorias c ON p.categoria_id = c.id
+        WHERE p.categoria_id = ?
+        ORDER BY p.nombre
+        LIMIT ? OFFSET ?"
+    );
     $stmt->bind_param('iii', $catParam, $porPagina, $offset);
-    $stmt->execute();
-    $resProds = $stmt->get_result();
 } else {
-    $sqlProds = "SELECT p.id,
-                        p.nombre   AS prod_nombre,
-                        p.precio,
-                        p.imagen   AS prod_imagen,
-                        c.nombre   AS cat_nombre
-                 FROM productos p
-                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                 ORDER BY p.nombre
-                 LIMIT ? OFFSET ?";
-    $stmt = $mysqli->prepare($sqlProds);
+    $stmt = $mysqli->prepare(
+        "SELECT p.id, p.nombre AS prod_nombre, p.precio, p.imagen AS prod_imagen, c.nombre AS cat_nombre
+        FROM productos p
+        LEFT JOIN categorias c ON p.categoria_id = c.id
+        ORDER BY p.nombre
+        LIMIT ? OFFSET ?"
+    );
     $stmt->bind_param('ii', $porPagina, $offset);
-    $stmt->execute();
-    $resProds = $stmt->get_result();
 }
+$stmt->execute();
+$resProds = $stmt->get_result();
 
-// Si no hay producto en esta página y el usuario pidió una página > 1, forzar a la última
+// Redirigir si pedimos página sin resultados
 if ($resProds->num_rows === 0 && $pageParam > 1) {
-    header("Location: ?cat={$catParam}&page=" . $totalPaginas);
+    header("Location: ?cat={$catParam}&page={$totalPaginas}");
     exit;
 }
 ?>
 
-<!-- 6) Grid de categorías -->
+<!-- Grid de Categorías -->
 <h3 class="mb-4">Categorías</h3>
-<?php if (count($cats) > 0): ?>
+<?php if ($cats): ?>
     <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
         <?php foreach ($cats as $cat): ?>
             <div class="col">
@@ -125,27 +101,21 @@ if ($resProds->num_rows === 0 && $pageParam > 1) {
     <div class="alert alert-info">No hay categorías disponibles.</div>
 <?php endif; ?>
 
-<!-- 7) Título de “Catálogo” o nombre de categoría seleccionada -->
+<!-- Título de sección -->
 <?php
-if ($catParam > 0):
-    // Buscar el nombre de la categoría actual
-    $catActual = null;
-    foreach ($cats as $c) {
-        if ((int)$c['id'] === $catParam) {
-            $catActual = $c;
-            break;
-        }
-    }
-    $titulo = $catActual
-        ? "Productos en “" . htmlspecialchars($catActual['nombre']) . "”"
+if ($catParam > 0) {
+    $actual = array_filter($cats, fn($c) => (int)$c['id'] === $catParam);
+    $actual = array_shift($actual);
+    $titulo = $actual
+        ? "Productos en “" . htmlspecialchars($actual['nombre']) . "”"
         : "Categoría no encontrada";
-else:
+} else {
     $titulo = "Todos los Productos";
-endif;
+}
 ?>
 <h3 class="mb-4"><?php echo $titulo; ?></h3>
 
-<!-- 8) Grid de productos -->
+<!-- Grid de Productos -->
 <?php if ($resProds->num_rows > 0): ?>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <?php while ($prod = $resProds->fetch_assoc()): ?>
@@ -177,49 +147,29 @@ endif;
     <div class="alert alert-info">No hay productos para mostrar.</div>
 <?php endif; ?>
 
-<!-- 9) Paginación Bootstrap -->
+<!-- Paginación -->
 <?php if ($totalPaginas > 1): ?>
     <nav aria-label="Paginación" class="mt-4">
         <ul class="pagination justify-content-center">
             <?php
-            // “Anterior”
-            $prevPage = max(1, $pageParam - 1);
-            $disabledPrev = ($pageParam === 1) ? ' disabled' : '';
+            $prev = max(1, $pageParam - 1);
+            $next = min($totalPaginas, $pageParam + 1);
             ?>
-            <li class="page-item<?php echo $disabledPrev; ?>">
-                <a
-                    class="page-link"
-                    href="?cat=<?php echo $catParam; ?>&page=<?php echo $prevPage; ?>"
-                    aria-label="Anterior"
-                >
-                    <span aria-hidden="true">&laquo;</span>
+            <li class="page-item <?php echo $pageParam === 1 ? 'disabled' : ''; ?>">
+                <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $prev ?>">
+                    &laquo;
                 </a>
             </li>
-
-            <?php
-            // Mostrar un rango de páginas (por ejemplo, de 1 a $totalPaginas)
-            for ($i = 1; $i <= $totalPaginas; $i++):
-                $active = ($i === $pageParam) ? ' active' : '';
-            ?>
-                <li class="page-item<?php echo $active; ?>">
-                    <a class="page-link" href="?cat=<?php echo $catParam; ?>&page=<?php echo $i; ?>">
-                        <?php echo $i; ?>
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+                <li class="page-item <?php echo $i === $pageParam ? 'active' : ''; ?>">
+                    <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $i ?>">
+                        <?php echo $i ?>
                     </a>
                 </li>
             <?php endfor; ?>
-
-            <?php
-            // “Siguiente”
-            $nextPage = min($totalPaginas, $pageParam + 1);
-            $disabledNext = ($pageParam === $totalPaginas) ? ' disabled' : '';
-            ?>
-            <li class="page-item<?php echo $disabledNext; ?>">
-                <a
-                    class="page-link"
-                    href="?cat=<?php echo $catParam; ?>&page=<?php echo $nextPage; ?>"
-                    aria-label="Siguiente"
-                >
-                    <span aria-hidden="true">&raquo;</span>
+            <li class="page-item <?php echo $pageParam === $totalPaginas ? 'disabled' : ''; ?>">
+                <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $next ?>">
+                    &raquo;
                 </a>
             </li>
         </ul>
@@ -227,6 +177,5 @@ endif;
 <?php endif; ?>
 
 <?php
-// 10) Cerrar conexión y requerir footer
 $stmt->close();
 require '../includes/footer.php';
