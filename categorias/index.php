@@ -35,7 +35,6 @@ $result->free();
         <table class="table table-striped table-bordered align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th scope="col">ID</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Imagen</th>
                     <th scope="col">Fecha Creación</th>
@@ -45,7 +44,6 @@ $result->free();
             <tbody>
                 <?php foreach ($cats as $cat): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($cat['id']); ?></td>
                         <td><?php echo htmlspecialchars($cat['nombre']); ?></td>
                         <td>
                             <?php if ($cat['imagen']): ?>
@@ -70,8 +68,8 @@ $result->free();
                             </a>
                             <a
                                 href="delete.php?id=<?php echo $cat['id']; ?>"
-                                class="btn btn-sm btn-danger"
-                                onclick="return confirm('¿Eliminar categoría <?php echo addslashes($cat['nombre']); ?>?');"
+                                class="btn btn-danger"
+                                data-confirm="¿Estás seguro de eliminar la categoría '<?php echo addslashes($cat['nombre']); ?>'?"
                                 title="Eliminar categoría"
                             >
                                 Eliminar

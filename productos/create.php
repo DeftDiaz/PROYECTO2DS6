@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="nombre"
                     class="form-control"
                     value="<?php echo htmlspecialchars($nombre); ?>"
-                    required
+                    required autocomplete="off"
                 >
             </div>
 
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label for="precio" class="form-label">Precio ($)</label>
                 <input
-                    type="number"
+                    type="text"
                     step="0.01"
                     min="0"
                     id="precio"
@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="mb-3">
-                <label for="imagen" class="form-label">Subir Imagen <small class="text-muted">(opcional)</small></label>
+                <label for="imagen" class="form-label">Subir Imagen </label>
                 <input
                     type="file"
                     id="imagen"
@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="mb-3">
-                <label for="descripcion" class="form-label">Descripción <small class="text-muted">(opcional)</small></label>
+                <label for="descripcion" class="form-label">Descripción </label>
                 <textarea
                     id="descripcion"
                     name="descripcion"
@@ -194,4 +194,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
+<script src="/PROYECTO2DS6/js/script.js"></script>
 <?php require '../includes/footer.php'; ?>

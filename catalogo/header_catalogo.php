@@ -23,8 +23,6 @@ if ($_SESSION['usuario']['rol'] === '01') {
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-        crossorigin="anonymous"
     >
     <!-- Bootstrap Icons (opcional) -->
     <link
@@ -37,7 +35,7 @@ if ($_SESSION['usuario']['rol'] === '01') {
 </head>
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark border-bottom mb-4">
         <div class="container">
             <a class="navbar-brand" href="/PROYECTO2DS6/catalogo/index.php">Catálogo</a>
             <button

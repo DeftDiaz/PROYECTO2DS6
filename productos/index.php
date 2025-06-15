@@ -4,10 +4,26 @@
 require '../config/db.php';
 require '../includes/header.php';
 
+// 1. Obtener categorías
+$cat_sql = "SELECT id, nombre FROM categorias ORDER BY nombre";
+$cat_result = $mysqli->query($cat_sql);
+$categorias = [];
+while ($row = $cat_result->fetch_assoc()) {
+    $categorias[] = $row;
+}
+$cat_result->free();
+
+// 2. Leer categoría seleccionada
+$categoria_id = isset($_GET['categoria_id']) ? intval($_GET['categoria_id']) : 0;
+
+// 3. Consulta de productos (con filtro si aplica)
 $sql = "SELECT p.id, p.nombre, p.precio, p.imagen, p.fecha_creacion, c.nombre AS categoria
         FROM productos p
-        LEFT JOIN categorias c ON p.categoria_id = c.id
-        ORDER BY p.fecha_creacion DESC";
+        LEFT JOIN categorias c ON p.categoria_id = c.id";
+if ($categoria_id > 0) {
+    $sql .= " WHERE p.categoria_id = $categoria_id";
+}
+$sql .= " ORDER BY p.fecha_creacion DESC";
 $result = $mysqli->query($sql);
 
 if (!$result) {
@@ -22,8 +38,27 @@ $result->free();
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Productos</h2>
-    <a href="create.php" class="btn btn-primary">Nuevo Producto</a>
+    <h2 class="mb-0">Productos</h2>
+    <div class="d-flex align-items-center">
+        <form method="get" class="mb-0 me-2">
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <label for="categoria_id" class="col-form-label">Filtrar por categoría:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="categoria_id" id="categoria_id" class="form-select" onchange="this.form.submit()">
+                        <option value="0">Todas</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>" <?php if ($cat['id'] == $categoria_id) echo 'selected'; ?>>
+                                <?php echo htmlspecialchars($cat['nombre']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <a href="create.php" class="btn btn-primary">Nuevo Producto</a>
+    </div>
 </div>
 
 <?php if (count($productos) > 0): ?>
@@ -31,7 +66,6 @@ $result->free();
         <table class="table table-hover table-bordered align-middle">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
                     <th>Nombre</th>
                     <th>Categoría</th>
                     <th>Precio ($)</th>
@@ -43,7 +77,6 @@ $result->free();
             <tbody>
                 <?php foreach ($productos as $prod): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($prod['id']); ?></td>
                         <td><?php echo htmlspecialchars($prod['nombre']); ?></td>
                         <td><?php echo htmlspecialchars($prod['categoria']); ?></td>
                         <td><?php echo number_format((float)$prod['precio'], 2); ?></td>
@@ -64,7 +97,7 @@ $result->free();
                                class="btn btn-sm btn-warning me-1">Editar</a>
                             <a href="delete.php?id=<?php echo $prod['id']; ?>"
                                class="btn btn-sm btn-danger"
-                               onclick="return confirm('¿Eliminar producto <?php echo addslashes($prod['nombre']); ?>?');"
+                               data-confirm="¿Eliminar producto <?php echo addslashes($prod['nombre']); ?>?"
                             >Eliminar</a>
                         </td>
                     </tr>

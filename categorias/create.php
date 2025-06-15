@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
-        <!-- El atributo enctype="multipart/form-data" es esencial para subir archivos -->
+        <!-- Atributo enctype="multipart/form-data" es para subir archivos -->
         <form method="post" enctype="multipart/form-data" novalidate>
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre</label>
@@ -96,13 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="nombre"
                     class="form-control"
                     value="<?php echo htmlspecialchars($nombre); ?>"
-                    required
+                    required autocomplete="off"
                 >
             </div>
 
             <div class="mb-3">
                 <label for="imagen" class="form-label">Subir Imagen 
-                    <small class="text-muted">(opcional)</small>
                 </label>
                 <input
                     type="file"
@@ -120,4 +119,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
+<script src="/PROYECTO2DS6/js/script.js"></script>
 <?php require '../includes/footer.php'; ?>

@@ -11,23 +11,23 @@ if (isset($_SESSION['usuario'])) {
 }
 
 $errors = [];
-$cedula = '';
+$usuario = '';
 
 // 2) Procesar formulario POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $cedula = trim($_POST['cedula'] ?? '');
+    $usuario = trim($_POST['usuario'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
     // 3) Validar campos no vacíos
-    if ($cedula === '' || $password === '') {
-        $errors[] = 'Cédula y contraseña son obligatorios.';
+    if ($usuario === '' || $password === '') {
+        $errors[] = 'Usuario y contraseña son obligatorios.';
     } else {
         // 4) Buscar usuario en BD
-        $sql = "SELECT cedula, password, rol, activo 
+        $sql = "SELECT usuario, password, rol, activo 
                 FROM usuarios 
-                WHERE cedula = ? LIMIT 1";
+                WHERE usuario = ? LIMIT 1";
         $stmt = $mysqli->prepare($sql);
-        $stmt->bind_param('s', $cedula);
+        $stmt->bind_param('s', $usuario);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($password === $user['password']) {
                     // Credenciales válidas
                     $_SESSION['usuario'] = [
-                        'cedula' => $user['cedula'],
+                        'usuario' => $user['usuario'],
                         'rol'    => $user['rol']
                     ];
 
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = 'Usuario no está activo.';
             }
         } else {
-            $errors[] = 'Cédula no registrada.';
+            $errors[] = 'Usuario no registrado.';
         }
 
         $stmt->close();
@@ -98,14 +98,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <!-- Formulario de login -->
                 <form method="post" novalidate>
                     <div class="mb-3">
-                        <label for="cedula" class="form-label">Cédula</label>
+                        <label for="usuario" class="form-label">Usuario</label>
                         <input
                             type="text"
-                            id="cedula"
-                            name="cedula"
+                            id="usuario"
+                            name="usuario"
                             class="form-control"
-                            value="<?php echo htmlspecialchars($cedula); ?>"
-                            required
+                            value="<?php echo htmlspecialchars($usuario); ?>"
+                            required autocomplete="off"
                         >
                     </div>
 
@@ -127,10 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Bootstrap JS -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-in8JYL8i7Av/XFX6c4hMVK9OjnLTWO+6x2SXXzFQHILnzo6uTC+jWWMZ5Wdl9OMR"
-        crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/PROYECTO2DS6/js/script.js"></script>
 </body>
 </html>

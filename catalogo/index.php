@@ -115,6 +115,27 @@ if ($catParam > 0) {
 ?>
 <h3 class="mb-4"><?php echo $titulo; ?></h3>
 
+<!-- Filtro de categorías -->
+<div class="d-flex justify-content-end align-items-center mb-3">
+    <form method="get" class="mb-0">
+        <div class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label for="cat" class="col-form-label">Filtrar por categoría:</label>
+            </div>
+            <div class="col-auto">
+                <select name="cat" id="cat" class="form-select" onchange="this.form.submit()">
+                    <option value="0">Todas</option>
+                    <?php foreach ($cats as $cat): ?>
+                        <option value="<?php echo $cat['id']; ?>" <?php if ($cat['id'] == $catParam) echo 'selected'; ?>>
+                            <?php echo htmlspecialchars($cat['nombre']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+
 <!-- Grid de Productos -->
 <?php if ($resProds->num_rows > 0): ?>
     <div class="row row-cols-1 row-cols-md-3 g-4">
@@ -179,3 +200,8 @@ if ($catParam > 0) {
 <?php
 $stmt->close();
 require '../includes/footer.php';
+?>
+
+<script src="/PROYECTO2DS6/js/script.js"></script>
+</body>
+</html>

@@ -229,4 +229,5 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     </div>
 </div>
 
+<script src="/PROYECTO2DS6/js/script.js"></script>
 <?php require '../includes/footer.php'; ?>

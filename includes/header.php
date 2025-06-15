@@ -9,7 +9,7 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 // A partir de aquí, $_SESSION['usuario'] contiene:
-//   ['cedula' => '...', 'rol' => '01' ó '02']
+//   ['usuario' => '...', 'rol' => '01' ó '02']
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -30,7 +30,7 @@ if (!isset($_SESSION['usuario'])) {
     <!-- Navbar con Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="/PROYECTO2DS6/">Mi Proyecto</a>
+            <a class="navbar-brand" href="/PROYECTO2DS6/">Gestion de Inventario</a>
             <button
                 class="navbar-toggler"
                 type="button"

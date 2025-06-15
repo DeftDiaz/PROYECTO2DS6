@@ -38,3 +38,7 @@ if ($stmt->execute()) {
 } else {
     die("Error al eliminar producto: " . $stmt->error);
 }
+?>
+<script src="/PROYECTO2DS6/js/script.js"></script>
+</body>
+</html>
