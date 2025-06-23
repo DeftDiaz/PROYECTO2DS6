@@ -1,8 +1,8 @@
 <?php
 // C:\xampp\htdocs\PROYECTO2DS6\productos\create.php
-
-require '../config/db.php';
 require '../includes/header.php';
+session_start();
+require '../config/db.php';
 
 // Asegurarse de que solo Admin (rol 01) pueda acceder a esta página
 if ($_SESSION['usuario']['rol'] !== '01') {
@@ -102,6 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/admin.css">
+    <title>Nuevo Producto</title>
+</head>
 
 <div class="row justify-content-center">
     <div class="col-lg-8">

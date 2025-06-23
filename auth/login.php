@@ -10,7 +10,6 @@ if (isset($_SESSION['usuario'])) {
     exit;
 }
 
-$errors = [];
 $usuario = '';
 
 // 2) Procesar formulario POST
@@ -19,9 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password'] ?? '');
 
     // 3) Validar campos no vacíos
-    if ($usuario === '' || $password === '') {
-        $errors[] = 'Usuario y contraseña son obligatorios.';
-    } else {
+    if ($usuario !== '' && $password !== '') {
         // 4) Buscar usuario en BD
         $sql = "SELECT usuario, password, rol, activo 
                 FROM usuarios 
@@ -36,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 5) Verificar que esté activo (activo = 1)
             if ((int)$user['activo'] === 1) {
-                // 6) Comparar contraseña en texto plano (así está en tu volcado)
+                // 6) Comparar contraseña en texto plano
                 if ($password === $user['password']) {
                     // Credenciales válidas
                     $_SESSION['usuario'] = [
@@ -55,15 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         exit;
                     }
                 } else {
-                    $errors[] = 'Contraseña incorrecta.';
+                    // Contraseña incorrecta
+                    header('Location: login.php?error=contrasena&usuario=' . urlencode($usuario));
+                    exit;
                 }
             } else {
-                $errors[] = 'Usuario no está activo.';
+                // Usuario no activo: ahora se trata igual que usuario no registrado
+                header('Location: login.php?error=usuario&usuario=' . urlencode($usuario));
+                exit;
             }
         } else {
-            $errors[] = 'Usuario no registrado.';
+            // Usuario no registrado
+            header('Location: login.php?error=usuario&usuario=' . urlencode($usuario));
+            exit;
         }
-
         $stmt->close();
     }
 }
@@ -73,61 +75,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/login.css">
     <title>Iniciar Sesión</title>
 </head>
-<body class="bg-light">
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="card shadow-sm" style="width: 360px;">
-            <div class="card-body">
-                <h3 class="card-title mb-4 text-center">Iniciar Sesión</h3>
+<body class="login-bg">
+    <div class="login-center">
+        <div class="login-card">
+            <h3 class="login-title">Iniciar Sesión</h3>
 
-                <!-- Mostrar errores si los hay -->
-                <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            <?php foreach ($errors as $e): ?>
-                                <li><?php echo htmlspecialchars($e); ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Formulario de login -->
-                <form method="post" novalidate>
-                    <div class="mb-3">
-                        <label for="usuario" class="form-label">Usuario</label>
-                        <input
-                            type="text"
-                            id="usuario"
-                            name="usuario"
-                            class="form-control"
-                            value="<?php echo htmlspecialchars($usuario); ?>"
-                            required autocomplete="off"
-                        >
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="form-control"
-                            required
-                        >
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Ingresar</button>
-                </form>
-            </div>
+            <!-- Formulario de login -->
+            <form method="post" class="login-form" novalidate>
+                <div class="form-group">
+                    <label for="usuario">Usuario</label>
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        value="<?php echo htmlspecialchars($_GET['usuario'] ?? $usuario); ?>"
+                        required 
+                        autocomplete="off"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                    >
+                </div>
+                
+                <button type="submit">Ingresar</button>
+            </form>
         </div>
     </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/PROYECTO2DS6/js/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,114 @@
+* {
+    box-sizing: border-box;
+}
+
+body.login-bg {
+    background: linear-gradient(135deg, #2563eb 0%, #1e293b 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-center {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(37, 99, 235, 0.10), 0 1.5px 6px rgba(30, 41, 59, 0.08);
+    width: 100%;
+    max-width: 380px;
+    padding: 2.5rem 2rem 2rem 2rem;
+    border: 3.5px solid #000000;
+}
+
+.login-title {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #1e293b;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #22223b;
+    font-weight: 500;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    margin-bottom: 1.1rem;
+    font-size: 1rem;
+    background: #f8fafc;
+    transition: border 0.2s;
+}
+
+.login-form input:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+.login-form button[type="submit"] {
+    width: 100%;
+    padding: 0.8rem;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+
+.login-form button[type="submit"]:hover {
+    background: #10397d;
+}
+
+.login-alert {
+    background: #f1f5f9;
+    color: #b91c1c;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    border: 1px solid #fca5a5;
+}
+
+.login-alert ul {
+    margin: 0;
+    padding-left: 1.2em;
+}
+
+.login-alert li {
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 1.5rem 0.7rem;
+        margin: 10px;
+    }
+    .login-title {
+        font-size: 1.2rem;
+    }
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        padding: 0.7rem 0.7rem;
+    }
+}

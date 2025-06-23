@@ -1,28 +1,59 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('script.js cargado');
     // Validación de login en el cliente
-    var loginForm = document.querySelector('form[method="post"]');
+    var loginForm = document.querySelector('form[method="post"].login-form');
     if (loginForm) {
+        var usuario = loginForm.querySelector('[name="usuario"]');
+        var password = loginForm.querySelector('[name="password"]');
+        var usuarioError = document.createElement('div');
+        usuarioError.className = 'input-error';
+        usuarioError.style.color = '#e53935';
+        usuarioError.style.fontSize = '0.93em';
+        usuarioError.style.marginTop = '3px';
+        var passwordError = usuarioError.cloneNode();
+        // Insertar los divs de error debajo de los inputs si no existen
+        if (!usuario.nextElementSibling || !usuario.nextElementSibling.classList.contains('input-error')) {
+            usuario.parentNode.appendChild(usuarioError);
+        } else {
+            usuarioError = usuario.nextElementSibling;
+        }
+        if (!password.nextElementSibling || !password.nextElementSibling.classList.contains('input-error')) {
+            password.parentNode.appendChild(passwordError);
+        } else {
+            passwordError = password.nextElementSibling;
+        }
+        // Mostrar errores de credenciales incorrectas si vienen por la URL
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error') === 'usuario') {
+            usuarioError.textContent = 'Usuario no registrado';
+        } else if (params.get('error') === 'contrasena') {
+            passwordError.textContent = 'Contraseña incorrecta.';
+        }
         loginForm.addEventListener('submit', function(e) {
-            var usuario = loginForm.querySelector('[name="usuario"]');
-            var password = loginForm.querySelector('[name="password"]');
-            var errores = [];
+            let errores = false;
+            usuarioError.textContent = '';
+            passwordError.textContent = '';
             if (!usuario.value.trim()) {
-                errores.push('El usuario es obligatorio.');
+                usuarioError.textContent = 'El usuario es obligatorio.';
+                errores = true;
             } else if (usuario.value.trim().length < 4) {
-                errores.push('El usuario debe tener al menos 4 caracteres.');
+                usuarioError.textContent = 'Debe tener al menos 4 caracteres.';
+                errores = true;
             } else if (usuario.value.trim().length > 15) {
-                errores.push('El usuario no puede tener más de 10 caracteres.');
+                usuarioError.textContent = 'No puede tener más de 15 caracteres.';
+                errores = true;
             }
             if (!password.value.trim()) {
-                errores.push('La contraseña es obligatoria.');
-            } else if (password.value.trim().length < 4) {
-                errores.push('La contraseña debe tener al menos 8 caracteres.');
+                passwordError.textContent = 'La contraseña es obligatoria.';
+                errores = true;
+            } else if (password.value.trim().length < 8) {
+                passwordError.textContent = 'Debe tener al menos 8 caracteres.';
+                errores = true;
             } else if (password.value.trim().length > 15) {
-                errores.push('La contraseña no puede tener más de 15 caracteres.');
+                passwordError.textContent = 'No puede tener más de 15 caracteres.';
+                errores = true;
             }
-            if (errores.length > 0) {
-                alert(errores.join('\n'));
+            if (errores) {
                 e.preventDefault();
             }
         });
@@ -65,6 +96,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validaciones para crear categorías y productos
     document.querySelectorAll('form').forEach(function(form) {
+        // Evitar alert en el login
+        if (form.classList.contains('login-form')) return;
         form.addEventListener('submit', function(e) {
             let valid = true;
             let msg = [];
@@ -92,9 +125,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     msg.push('El precio debe ser un número positivo.');
                 }
             }
+            // Mostrar errores visuales y nunca alert
+            let errorDiv = form.querySelector('.input-error-global');
             if (!valid) {
-                alert(msg.join('\n'));
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.className = 'input-error-global';
+                    errorDiv.style.color = '#e53935';
+                    errorDiv.style.fontSize = '0.95em';
+                    errorDiv.style.margin = '8px 0 10px 0';
+                    form.insertBefore(errorDiv, form.firstChild.nextSibling);
+                }
+                errorDiv.innerHTML = msg.map(m => `<div>${m}</div>`).join('');
                 e.preventDefault();
+            } else if (errorDiv) {
+                errorDiv.innerHTML = '';
             }
         });
 

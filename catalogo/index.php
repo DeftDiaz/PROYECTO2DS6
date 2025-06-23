@@ -66,39 +66,22 @@ if ($resProds->num_rows === 0 && $pageParam > 1) {
 ?>
 
 <!-- Grid de Categorías -->
-<h3 class="mb-4">Categorías</h3>
 <?php if ($cats): ?>
-    <div class="row row-cols-1 row-cols-md-4 g-4 mb-5">
+    <div class="categories-grid">
+        <h1 style="margin-bottom:2rem;grid-column:1/-1;">Categorías</h1>
         <?php foreach ($cats as $cat): ?>
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <?php if ($cat['imagen']): ?>
-                        <img
-                            src="<?php echo htmlspecialchars($cat['imagen']); ?>"
-                            class="card-img-top"
-                            alt="<?php echo htmlspecialchars($cat['nombre']); ?>"
-                            style="height:180px; object-fit:cover;"
-                            loading="lazy"
-                        >
-                    <?php else: ?>
-                        <div class="d-flex justify-content-center align-items-center bg-light" style="height:180px;">
-                            <span class="text-muted">Sin imagen</span>
-                        </div>
-                    <?php endif; ?>
-                    <div class="card-body text-center">
-                        <a
-                            href="?cat=<?php echo (int)$cat['id']; ?>"
-                            class="stretched-link text-decoration-none text-dark"
-                        >
-                            <h5 class="card-title"><?php echo htmlspecialchars($cat['nombre']); ?></h5>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <a href="?cat=<?php echo (int)$cat['id']; ?>" class="category-card">
+                <?php if ($cat['imagen']): ?>
+                    <img src="<?php echo htmlspecialchars($cat['imagen']); ?>" class="category-image" alt="<?php echo htmlspecialchars($cat['nombre']); ?>" loading="lazy">
+                <?php else: ?>
+                    <div class="no-image">Sin imagen</div>
+                <?php endif; ?>
+                <div class="category-title"><?php echo htmlspecialchars($cat['nombre']); ?></div>
+            </a>
         <?php endforeach; ?>
     </div>
 <?php else: ?>
-    <div class="alert alert-info">No hay categorías disponibles.</div>
+    <div style="background:#eef;padding:1rem;border-radius:8px;">No hay categorías disponibles.</div>
 <?php endif; ?>
 
 <!-- Título de sección -->
@@ -113,95 +96,92 @@ if ($catParam > 0) {
     $titulo = "Todos los Productos";
 }
 ?>
-<h3 class="mb-4"><?php echo $titulo; ?></h3>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/catalogo.css">
+    <title>Catálogo</title>
+</head>
+<body>
+<div class="catalogo-main-wrapper">
+<h3 class="page-title"><?php echo $titulo; ?></h3>
 
 <!-- Filtro de categorías -->
-<div class="d-flex justify-content-end align-items-center mb-3">
-    <form method="get" class="mb-0">
-        <div class="row g-2 align-items-center">
-            <div class="col-auto">
-                <label for="cat" class="col-form-label">Filtrar por categoría:</label>
-            </div>
-            <div class="col-auto">
-                <select name="cat" id="cat" class="form-select" onchange="this.form.submit()">
-                    <option value="0">Todas</option>
-                    <?php foreach ($cats as $cat): ?>
-                        <option value="<?php echo $cat['id']; ?>" <?php if ($cat['id'] == $catParam) echo 'selected'; ?>>
-                            <?php echo htmlspecialchars($cat['nombre']); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
+<div class="catalogo-filter-container">
+    <div style="flex:1"></div>
+    <form class="catalogo-filter-form">
+        <label for="cat" class="filter-label">Filtrar por categoría:</label>
+        <select name="cat" id="cat" class="form-select" onchange="this.form.submit()">
+            <option value="0">Todas las categorías</option>
+            <?php foreach ($cats as $cat): ?>
+                <option value="<?php echo $cat['id']; ?>" <?php if ($cat['id'] == $catParam) echo 'selected'; ?>>
+                    <?php echo htmlspecialchars($cat['nombre']); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
     </form>
 </div>
 
 <!-- Grid de Productos -->
 <?php if ($resProds->num_rows > 0): ?>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="products-grid">
         <?php while ($prod = $resProds->fetch_assoc()): ?>
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <?php if ($prod['prod_imagen']): ?>
-                        <img
-                            src="<?php echo htmlspecialchars($prod['prod_imagen']); ?>"
-                            class="card-img-top"
-                            alt="<?php echo htmlspecialchars($prod['prod_nombre']); ?>"
-                            style="height:200px; object-fit:cover;"
-                            loading="lazy"
-                        >
-                    <?php else: ?>
-                        <div class="d-flex justify-content-center align-items-center bg-light" style="height:200px;">
-                            <span class="text-muted">Sin imagen</span>
-                        </div>
-                    <?php endif; ?>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title"><?php echo htmlspecialchars($prod['prod_nombre']); ?></h5>
-                        <p class="card-text text-truncate"><?php echo htmlspecialchars($prod['cat_nombre']); ?></p>
-                        <p class="card-text fw-bold">$ <?php echo number_format((float)$prod['precio'], 2); ?></p>
+            <div class="product-card">
+                <?php if ($prod['prod_imagen']): ?>
+                    <img
+                        src="<?php echo htmlspecialchars($prod['prod_imagen']); ?>"
+                        class="product-image"
+                        alt="<?php echo htmlspecialchars($prod['prod_nombre']); ?>"
+                        loading="lazy"
+                    >
+                <?php else: ?>
+                    <div class="no-image-placeholder">
+                        Sin imagen disponible
                     </div>
+                <?php endif; ?>
+                <div class="product-info">
+                    <h5 class="product-name"><?php echo htmlspecialchars($prod['prod_nombre']); ?></h5>
+                    <span class="product-category"><?php echo htmlspecialchars($prod['cat_nombre']); ?></span>
+                    <div class="product-price"><?php echo number_format((float)$prod['precio'], 2); ?></div>
                 </div>
             </div>
         <?php endwhile; ?>
     </div>
 <?php else: ?>
-    <div class="alert alert-info">No hay productos para mostrar.</div>
+    <div class="alert alert-info">No hay productos para mostrar en esta categoría.</div>
 <?php endif; ?>
 
 <!-- Paginación -->
 <?php if ($totalPaginas > 1): ?>
-    <nav aria-label="Paginación" class="mt-4">
-        <ul class="pagination justify-content-center">
+    <nav class="pagination-container" aria-label="Paginación">
+        <ul class="pagination">
             <?php
             $prev = max(1, $pageParam - 1);
             $next = min($totalPaginas, $pageParam + 1);
             ?>
             <li class="page-item <?php echo $pageParam === 1 ? 'disabled' : ''; ?>">
-                <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $prev ?>">
-                    &laquo;
+                <a class="page-link nav-arrow" href="?cat=<?php echo $catParam ?>&page=<?php echo $prev ?>" aria-label="Página anterior">
+                    ‹
                 </a>
             </li>
             <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                 <li class="page-item <?php echo $i === $pageParam ? 'active' : ''; ?>">
-                    <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $i ?>">
+                    <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $i ?>" aria-label="Página <?php echo $i ?>">
                         <?php echo $i ?>
                     </a>
                 </li>
             <?php endfor; ?>
             <li class="page-item <?php echo $pageParam === $totalPaginas ? 'disabled' : ''; ?>">
-                <a class="page-link" href="?cat=<?php echo $catParam ?>&page=<?php echo $next ?>">
-                    &raquo;
+                <a class="page-link nav-arrow" href="?cat=<?php echo $catParam ?>&page=<?php echo $next ?>" aria-label="Página siguiente">
+                    ›
                 </a>
             </li>
         </ul>
     </nav>
 <?php endif; ?>
 
-<?php
-$stmt->close();
-require '../includes/footer.php';
-?>
-
+<?php require '../includes/footer.php'; ?>
+</div>
 <script src="/PROYECTO2DS6/js/script.js"></script>
 </body>
 </html>

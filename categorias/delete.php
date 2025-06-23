@@ -2,10 +2,10 @@
 // C:\xampp\htdocs\PROYECTO2DS6\categorias\delete.php
 
 require '../config/db.php';
-require '../includes/header.php';
+session_start();
 
 // 1) Solo Admin
-if ($_SESSION['usuario']['rol'] !== '01') {
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== '01') {
     header('Location: ../catalogo/index.php');
     exit;
 }
@@ -31,6 +31,12 @@ if ($stmt->execute()) {
     die("Error al eliminar categoría: " . $stmt->error);
 }
 ?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/admin.css">
+    <title>Eliminar Categoría</title>
+</head>
 <script src="/PROYECTO2DS6/js/script.js"></script>
 </body>
 </html>

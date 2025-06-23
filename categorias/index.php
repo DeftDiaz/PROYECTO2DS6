@@ -25,60 +25,69 @@ while ($fila = $result->fetch_assoc()) {
 $result->free();
 ?>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Categorías</h2>
-    <a href="create.php" class="btn btn-primary">Nueva Categoría</a>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/admin.css">
+    <title>Categorías</title>
+</head>
+
+<div class="page-header">
+    <h2 class="page-title">Categorías</h2>
+    <a href="create.php" class="btn btn-primary categoria-btn">+ Nueva Categoría</a>
 </div>
 
 <?php if (count($cats) > 0): ?>
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Imagen</th>
-                    <th scope="col">Fecha Creación</th>
-                    <th scope="col">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($cats as $cat): ?>
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($cat['nombre']); ?></td>
-                        <td>
-                            <?php if ($cat['imagen']): ?>
-                                <img
-                                    src="<?php echo htmlspecialchars($cat['imagen']); ?>"
-                                    alt="Thumb"
-                                    style="width:50px; height:50px; object-fit:cover;"
-                                    loading="lazy"
-                                >
-                            <?php else: ?>
-                                —
-                            <?php endif; ?>
-                        </td>
-                        <td><?php echo htmlspecialchars($cat['fecha_creacion']); ?></td>
-                        <td>
-                            <a
-                                href="edit.php?id=<?php echo $cat['id']; ?>"
-                                class="btn btn-sm btn-warning me-1"
-                                title="Editar categoría"
-                            >
-                                Editar
-                            </a>
-                            <a
-                                href="delete.php?id=<?php echo $cat['id']; ?>"
-                                class="btn btn-danger"
-                                data-confirm="¿Estás seguro de eliminar la categoría '<?php echo addslashes($cat['nombre']); ?>'?"
-                                title="Eliminar categoría"
-                            >
-                                Eliminar
-                            </a>
-                        </td>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Fecha Creación</th>
+                        <th scope="col">Acciones</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($cats as $cat): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($cat['nombre']); ?></td>
+                            <td>
+                                <?php if ($cat['imagen']): ?>
+                                    <img
+                                        src="<?php echo htmlspecialchars($cat['imagen']); ?>"
+                                        alt="Imagen de categoría"
+                                        class="category-image"
+                                        loading="lazy"
+                                    >
+                                <?php else: ?>
+                                    <span class="no-image">Sin imagen</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo htmlspecialchars($cat['fecha_creacion']); ?></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a
+                                        href="edit.php?id=<?php echo $cat['id']; ?>"
+                                        class="btn btn-sm btn-warning"
+                                        title="Editar categoría"
+                                    >
+                                        Editar
+                                    </a>
+                                    <a href="delete.php?id=<?php echo $cat['id']; ?>"
+                                       class="btn btn-sm btn-danger"
+                                       data-confirm="¿Estás seguro de eliminar la categoría '<?php echo addslashes($cat['nombre']); ?>'?"
+                                       title="Eliminar categoría">
+                                       Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 <?php else: ?>
     <div class="alert alert-info">No hay categorías registradas.</div>

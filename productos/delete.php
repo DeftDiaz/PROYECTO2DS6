@@ -2,7 +2,7 @@
 // C:\xampp\htdocs\PROYECTO2DS6\productos\delete.php
 
 require '../config/db.php';
-require '../includes/header.php';
+session_start();
 
 // Verificar ID por GET
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -42,3 +42,9 @@ if ($stmt->execute()) {
 <script src="/PROYECTO2DS6/js/script.js"></script>
 </body>
 </html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/admin.css">
+    <title>Eliminar Producto</title>
+</head>

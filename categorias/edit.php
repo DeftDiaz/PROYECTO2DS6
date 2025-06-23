@@ -1,8 +1,7 @@
 <?php
 // C:\xampp\htdocs\PROYECTO2DS6\categorias\edit.php
-
-require '../config/db.php';
 require '../includes/header.php';
+require '../config/db.php';
 
 $errors = [];
 $nombre = '';
@@ -98,6 +97,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $rutaImagen = $nuevaRuta;
 }
 ?>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/PROYECTO2DS6/css/admin.css">
+    <title>Editar Categoría</title>
+</head>
 
 <div class="row justify-content-center">
     <div class="col-md-6">

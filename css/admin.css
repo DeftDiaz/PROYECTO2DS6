@@ -1,0 +1,259 @@
+/* admin.css - Estilos para panel de administración de categorías y productos */
+
+body {
+    background: #f8fafc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1e293b;
+    margin: 0;
+}
+
+h2, h3 {
+    color: #2563eb;
+    font-weight: 700;
+    margin-bottom: 0.7rem;
+    margin-top: 0.7rem;
+}
+
+.container, .row {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+.d-flex, .row, .container {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.mb-3, .mb-4, .mb-5 {
+    margin-bottom: 0.7rem !important;
+}
+
+.table {
+    width: 100%;
+    min-width: unset;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(37,99,235,0.07);
+    margin-top: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+@media (max-width: 1100px) {
+    .table {
+        min-width: unset;
+    }
+}
+
+.table th, .table td {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.table th {
+    background: #2563eb;
+    color: #fff;
+    font-weight: 600;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1.1rem;
+    border-radius: 7px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: #fff;
+}
+.btn-primary:hover {
+    background: #1e293b;
+}
+
+.btn-success {
+    background: #22d3ee;
+    color: #1e293b;
+}
+.btn-success:hover {
+    background: #0ea5e9;
+    color: #fff;
+}
+
+.btn-warning {
+    background: #f59e42;
+    color: #fff;
+}
+.btn-warning:hover {
+    background: #d97706;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+.btn-secondary:hover {
+    background: #cbd5e1;
+}
+
+.btn-sm {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.97rem;
+    border-radius: 6px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.form-control, .form-select, textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f8fafc;
+    margin-bottom: 1.1rem;
+    transition: border 0.2s;
+}
+
+.form-control:focus, .form-select:focus, textarea:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+.table-responsive {
+    overflow-x: unset;
+}
+
+.alert {
+    background: #f1f5f9;
+    color: #b91c1c;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    border: 1px solid #fca5a5;
+}
+
+img.img-preview, .table img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 7px;
+    object-fit: cover;
+    background: #e2e8f0;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 600px) {
+    .action-buttons {
+        flex-wrap: wrap;
+        gap: 0.3rem;
+    }
+}
+
+/* --- NAVBAR --- */
+.navbar {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.navbar-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 56px;
+}
+.navbar-brand {
+    color: #222;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+}
+.nav-item {
+    position: relative;
+}
+.nav-link {
+    color: #222;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+.nav-link:hover, .nav-link.active {
+    background: #e0e0e0;
+    color: #111;
+}
+.nav-link.logout {
+    background: #e57373;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+}
+.nav-link.logout:hover {
+    background: #c62828;
+}
+@media (max-width: 700px) {
+    .navbar-container {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 8px;
+    }
+    .navbar-nav {
+        justify-content: flex-end;
+    }
+    .navbar-brand {
+        margin-bottom: 0.5rem;
+        text-align: left;
+    }
+}
+
+.categoria-btn {
+    margin-bottom: 1.2rem;
+}
