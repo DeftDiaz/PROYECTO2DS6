@@ -4,7 +4,7 @@
 require '../config/db.php'; // carga $mysqli
 session_start();
 
-// 1) Si ya está logueado, redirige a categorías
+// Si ya está logueado, redirige a categorías
 if (isset($_SESSION['usuario'])) {
     header('Location: /PROYECTO2DS6/categorias/index.php');
     exit;
@@ -12,14 +12,14 @@ if (isset($_SESSION['usuario'])) {
 
 $usuario = '';
 
-// 2) Procesar formulario POST
+// Procesar formulario POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $usuario = trim($_POST['usuario'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // 3) Validar campos no vacíos
+    // Validar campos no vacíos
     if ($usuario !== '' && $password !== '') {
-        // 4) Buscar usuario en BD
+        // Buscar usuario en BD
         $sql = "SELECT usuario, password, rol, activo 
                 FROM usuarios 
                 WHERE usuario = ? LIMIT 1";
@@ -31,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($result->num_rows === 1) {
             $user = $result->fetch_assoc();
 
-            // 5) Verificar que esté activo (activo = 1)
+            // Verificar que esté activo (activo = 1)
             if ((int)$user['activo'] === 1) {
-                // 6) Comparar contraseña en texto plano
+                // Comparar contraseña en texto plano
                 if ($password === $user['password']) {
                     // Credenciales válidas
                     $_SESSION['usuario'] = [

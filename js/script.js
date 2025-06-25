@@ -81,19 +81,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Limitar la cantidad de caracteres permitidos en los campos de nombre y descripción
     document.querySelectorAll('input[name="nombre"]').forEach(function(input) {
         input.addEventListener('input', function() {
-            if (input.value.length > 15) {
-                input.value = input.value.slice(0, 15);
+            if (input.value.length > 30) {
+                input.value = input.value.slice(0, 30);
             }
         });
     });
     document.querySelectorAll('textarea[name="descripcion"]').forEach(function(textarea) {
         textarea.addEventListener('input', function() {
-            if (textarea.value.length > 15) {
-                textarea.value = textarea.value.slice(0, 15);
+            if (textarea.value.length > 255) {
+                textarea.value = textarea.value.slice(0, 255);
             }
         });
     });
-
+    
     // Validaciones para crear categorías y productos
     document.querySelectorAll('form').forEach(function(form) {
         // Evitar alert en el login
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!input.value.trim()) {
                     valid = false;
                     msg.push('El campo "' + (input.getAttribute('name') || input.id) + '" es obligatorio.');
-                } else if (input.value.trim().length > 15) {
+                } else if (input.value.trim().length > 30) {
                     valid = false;
                     msg.push('El campo "' + (input.getAttribute('name') || input.id) + '" no puede tener más de 15 caracteres.');
                 }

@@ -4,22 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 1) Si no hay usuario en sesión, redirigimos a login
+// Si no hay usuario en sesión, redirigimos a login
 if (!isset($_SESSION['usuario'])) {
     header('Location: /PROYECTO2DS6/auth/login.php');
     exit;
 }
-
-// A partir de aquí, $_SESSION['usuario'] contiene:
-//   ['usuario' => '...', 'rol' => '01' ó '02']
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- Tus estilos personalizados -->
     
     <title>Panel Administrativo</title>
     

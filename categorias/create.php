@@ -1,6 +1,5 @@
 <?php
 // C:\xampp\htdocs\PROYECTO2DS6\categorias\create.php
-require '../includes/header.php';
 require '../config/db.php';
 
 $errors = [];
@@ -10,20 +9,20 @@ $nombre = '';
 $rutaImagen = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 1) Validar nombre
+    // Validar nombre
     if (empty(trim($_POST['nombre']))) {
         $errors[] = 'El nombre es obligatorio.';
     } else {
         $nombre = trim($_POST['nombre']);
     }
 
-    // 2) Manejar el archivo si se envió
+    // Manejar el archivo si se envió
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
         // Si hay error distinto de “no file”, validamos
         if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
             $errors[] = 'Error al subir la imagen.';
         } else {
-            // Validar tamaño (por ejemplo, <= 2MB)
+            // Validar tamaño imagen
             if ($_FILES['imagen']['size'] > 2 * 1024 * 1024) {
                 $errors[] = 'La imagen supera el tamaño máximo de 2 MB.';
             }
@@ -51,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 3) Si no hay errores, INSERT en BD
+    // Si no hay errores, INSERT en BD
     if (empty($errors)) {
         $sql = "INSERT INTO categorias (nombre, imagen, fecha_creacion)
                 VALUES (?, ?, NOW())";

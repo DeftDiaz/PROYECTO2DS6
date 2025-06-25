@@ -1,7 +1,7 @@
 <?php
 // /proyecto-web/config/db.php
 
-// 1) Datos de conexión
+// Datos de conexión
 $host = 'localhost';        
 $db   = 'proyecto2ds6';    
 $user = 'd62025';            

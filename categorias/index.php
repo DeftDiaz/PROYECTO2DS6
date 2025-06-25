@@ -76,10 +76,10 @@ $result->free();
                                         Editar
                                     </a>
                                     <a href="delete.php?id=<?php echo $cat['id']; ?>"
-                                       class="btn btn-sm btn-danger"
-                                       data-confirm="¿Estás seguro de eliminar la categoría '<?php echo addslashes($cat['nombre']); ?>'?"
-                                       title="Eliminar categoría">
-                                       Eliminar
+                                        class="btn btn-sm btn-danger"
+                                        data-confirm="¿Estás seguro de eliminar la categoría '<?php echo addslashes($cat['nombre']); ?>'?"
+                                        title="Eliminar categoría">
+                                        Eliminar
                                     </a>
                                 </div>
                             </td>

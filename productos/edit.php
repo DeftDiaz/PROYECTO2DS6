@@ -1,6 +1,5 @@
 <?php
 // C:\xampp\htdocs\PROYECTO2DS6\productos\edit.php
-require '../includes/header.php';
 require '../config/db.php';
 
 $errors = [];
@@ -11,13 +10,13 @@ $categoria_id = '';
 $rutaImagen = '';
 $id = 0;
 
-// 1) Verificar ID por GET
+// Verificar ID por GET
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID de producto no válido.");
 }
 $id = (int) $_GET['id'];
 
-// 2) Obtener lista de categorías
+// Obtener lista de categorías
 $sqlCats = "SELECT id, nombre FROM categorias ORDER BY nombre";
 $resCats = $mysqli->query($sqlCats);
 if (!$resCats) {
@@ -29,7 +28,7 @@ while ($fila = $resCats->fetch_assoc()) {
 }
 $resCats->free();
 
-// 3) Si no es POST, precargar datos del producto
+// Si no es POST, precargar datos del producto
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $sql = "SELECT * FROM productos WHERE id = ?";
     $stmt = $mysqli->prepare($sql);
@@ -47,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $categoria_id = $prod['categoria_id'];
     $stmt->close();
 } else {
-    // 4) Procesar POST para actualizar
+    // Procesar POST para actualizar
     $nombre = trim($_POST['nombre'] ?? '');
     $descripcion = trim($_POST['descripcion'] ?? '');
     $precio = trim($_POST['precio'] ?? '');
@@ -65,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         $errors[] = 'Categoría no válida.';
     }
 
-    // 5) Manejar archivo nuevo
+    // Manejar archivo nuevo
     $nuevaRuta = $rutaExistente;
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
@@ -98,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         }
     }
 
-    // 6) Si no hay errores, actualizar en BD
+    // Si no hay errores, actualizar en BD
     if (empty($errors)) {
         $sqlUpd = "UPDATE productos 
                     SET nombre = ?, descripcion = ?, precio = ?, imagen = ?, categoria_id = ?, fecha_actualizacion = NOW()
@@ -109,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         }
         $stmt2->bind_param('ssdsii', $nombre, $descripcion, $precio, $nuevaRuta, $categoria_id, $id);
         if ($stmt2->execute()) {
-            header('Location: index.php');
+            header('Location: /PROYECTO2DS6/productos/index.php');
             exit;
         } else {
             $errors[] = "Error al actualizar en BD: " . $stmt2->error;

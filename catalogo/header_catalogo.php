@@ -38,16 +38,3 @@ if ($_SESSION['usuario']['rol'] === '01') {
     <!-- Main Container -->
     <main class="main-container">
 
-
-<script>
-// Funciones para filtros (ejemplo básico)
-document.getElementById('categoryFilter').addEventListener('change', function() {
-    // Aquí iría la lógica de filtrado por categoría
-    console.log('Filtrar por categoría:', this.value);
-});
-
-document.getElementById('searchInput').addEventListener('input', function() {
-    // Aquí iría la lógica de búsqueda
-    console.log('Buscar:', this.value);
-});
-</script>

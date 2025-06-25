@@ -8,7 +8,7 @@ require 'header_catalogo.php';
 $catParam  = isset($_GET['cat'])  ? (int)$_GET['cat']  : 0;
 $pageParam = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 
-// 1) Obtén todas las categorías
+// Obtén todas las categorías
 $sqlCats = "SELECT id, nombre, imagen FROM categorias ORDER BY nombre";
 $resCats = $mysqli->query($sqlCats);
 $cats = [];
@@ -17,8 +17,8 @@ while ($fila = $resCats->fetch_assoc()) {
 }
 $resCats->free();
 
-// 2) Cuenta total de productos con filtro opcional
-$porPagina = 9;
+// Cuenta total de productos con filtro opcional
+$porPagina = 10;
 if ($catParam > 0) {
     $stmtCount = $mysqli->prepare(
         "SELECT COUNT(*) AS total FROM productos WHERE categoria_id = ?"
@@ -34,10 +34,10 @@ if ($catParam > 0) {
 $totalPaginas = max(1, (int) ceil($total / $porPagina));
 $offset = ($pageParam - 1) * $porPagina;
 
-// 3) Obtener productos paginados
+// Obtener productos paginados
 if ($catParam > 0) {
     $stmt = $mysqli->prepare(
-        "SELECT p.id, p.nombre AS prod_nombre, p.precio, p.imagen AS prod_imagen, c.nombre AS cat_nombre
+        "SELECT p.id, p.nombre AS prod_nombre, p.descripcion AS prod_descripcion, p.precio, p.imagen AS prod_imagen, c.nombre AS cat_nombre
         FROM productos p
         JOIN categorias c ON p.categoria_id = c.id
         WHERE p.categoria_id = ?
@@ -47,7 +47,7 @@ if ($catParam > 0) {
     $stmt->bind_param('iii', $catParam, $porPagina, $offset);
 } else {
     $stmt = $mysqli->prepare(
-        "SELECT p.id, p.nombre AS prod_nombre, p.precio, p.imagen AS prod_imagen, c.nombre AS cat_nombre
+        "SELECT p.id, p.nombre AS prod_nombre, p.descripcion AS prod_descripcion, p.precio, p.imagen AS prod_imagen, c.nombre AS cat_nombre
         FROM productos p
         LEFT JOIN categorias c ON p.categoria_id = c.id
         ORDER BY p.nombre
@@ -141,7 +141,7 @@ if ($catParam > 0) {
                 <?php endif; ?>
                 <div class="product-info">
                     <h5 class="product-name"><?php echo htmlspecialchars($prod['prod_nombre']); ?></h5>
-                    <span class="product-category"><?php echo htmlspecialchars($prod['cat_nombre']); ?></span>
+                    <span class="product-descrip"><?php echo htmlspecialchars($prod['prod_descripcion']); ?></span>
                     <div class="product-price"><?php echo number_format((float)$prod['precio'], 2); ?></div>
                 </div>
             </div>

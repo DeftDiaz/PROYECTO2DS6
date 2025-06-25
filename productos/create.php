@@ -1,11 +1,10 @@
 <?php
 // C:\xampp\htdocs\PROYECTO2DS6\productos\create.php
-require '../includes/header.php';
-session_start();
 require '../config/db.php';
 
 // Asegurarse de que solo Admin (rol 01) pueda acceder a esta página
-if ($_SESSION['usuario']['rol'] !== '01') {
+session_start();
+if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== '01') {
     header('Location: index.php');
     exit;
 }
@@ -17,7 +16,7 @@ $precio      = '';
 $categoria_id = 0;    // inicializar como entero
 $rutaImagen  = '';
 
-// 1) Obtener lista de categorías para el <select>
+// Obtener lista de categorías para el <select>
 $sqlCats = "SELECT id, nombre FROM categorias ORDER BY nombre";
 $resCats = $mysqli->query($sqlCats);
 if (!$resCats) {
@@ -30,13 +29,13 @@ while ($fila = $resCats->fetch_assoc()) {
 $resCats->free();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 2) Validar nombre
+    // Validar nombre
     $nombre = trim($_POST['nombre'] ?? '');
     if ($nombre === '') {
         $errors[] = 'El nombre es obligatorio.';
     }
 
-    // 3) Validar precio
+    // Validar precio
     $precioRaw = $_POST['precio'] ?? '';
     if ($precioRaw === '' || !is_numeric($precioRaw) || (float)$precioRaw < 0) {
         $errors[] = 'El precio debe ser un número válido.';
@@ -44,17 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $precio = (float) $precioRaw;
     }
 
-    // 4) Descripción opcional
+    // Descripción opcional
     $descripcion = trim($_POST['descripcion'] ?? '');
 
-    // 5) Validar categoría seleccionada
+    // Validar categoría seleccionada
     $categoria_id = (int)($_POST['categoria_id'] ?? 0);
     $validCatIds  = array_map('intval', array_column($cats, 'id'));
     if (!in_array($categoria_id, $validCatIds, true)) {
         $errors[] = 'Categoría no válida.';
     }
 
-    // 6) Manejar archivo si se sube
+    // Manejar archivo si se sube
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['imagen']['error'] !== UPLOAD_ERR_OK) {
             $errors[] = 'Error al subir la imagen.';
@@ -82,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // 7) Si no hay errores, INSERT en BD
+    // Si no hay errores, INSERT en BD
     if (empty($errors)) {
         $sql = "INSERT INTO productos 
                     (nombre, descripcion, precio, imagen, categoria_id, fecha_creacion)
@@ -101,6 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
     }
 }
+
+require '../includes/header.php';
 ?>
 
 <head>
@@ -192,6 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="descripcion"
                     class="form-control"
                     rows="3"
+                    maxlength="255"
                 ><?php echo htmlspecialchars($descripcion); ?></textarea>
             </div>
 

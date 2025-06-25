@@ -4,7 +4,7 @@
 require '../config/db.php';
 require '../includes/header.php';
 
-// 1. Obtener categorías
+// Obtener categorías
 $cat_sql = "SELECT id, nombre FROM categorias ORDER BY nombre";
 $cat_result = $mysqli->query($cat_sql);
 $categorias = [];
@@ -13,10 +13,10 @@ while ($row = $cat_result->fetch_assoc()) {
 }
 $cat_result->free();
 
-// 2. Leer categoría seleccionada
+// Leer categoría seleccionada
 $categoria_id = isset($_GET['categoria_id']) ? intval($_GET['categoria_id']) : 0;
 
-// 3. Consulta de productos (con filtro si aplica)
+// Consulta de productos (con filtro si aplica)
 $sql = "SELECT p.id, p.nombre, p.precio, p.imagen, p.fecha_creacion, c.nombre AS categoria
         FROM productos p
         LEFT JOIN categorias c ON p.categoria_id = c.id";
@@ -101,13 +101,13 @@ $result->free();
                             <td>
                                 <div class="action-buttons">
                                     <a href="edit.php?id=<?php echo $prod['id']; ?>"
-                                       class="btn btn-sm btn-warning"
-                                       title="Editar producto">Editar</a>
+                                        class="btn btn-sm btn-warning"
+                                        title="Editar producto">Editar</a>
                                     <a href="delete.php?id=<?php echo $prod['id']; ?>"
-                                       class="btn btn-sm btn-danger"
-                                       data-confirm="¿Eliminar producto <?php echo addslashes($prod['nombre']); ?>?"
-                                       title="Eliminar producto">
-                                       Eliminar
+                                        class="btn btn-sm btn-danger"
+                                        data-confirm="¿Eliminar producto <?php echo addslashes($prod['nombre']); ?>?"
+                                        title="Eliminar producto">
+                                        Eliminar
                                     </a>
                                 </div>
                             </td>

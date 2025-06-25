@@ -8,13 +8,13 @@ $nombre = '';
 $rutaImagen = ''; // guardaremos la ruta existente o la nueva
 $id = 0;
 
-// 1) Verificar que venga el ID por GET
+// Verificar que venga el ID por GET
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID de categoría no válido.");
 }
 $id = (int) $_GET['id'];
 
-// 2) Si no es POST, cargamos datos de BD para precargar
+// Si no es POST, cargamos datos de BD para precargar
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $sql = "SELECT * FROM categorias WHERE id = ?";
     $stmt = $mysqli->prepare($sql);
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $rutaImagen = $cat['imagen']; // ruta existente (puede ser cadena vacía)
     $stmt->close();
 } else {
-    // 3) Si es POST, procesamos la actualización
+    // Si es POST, procesamos la actualización
     $nombre = trim($_POST['nombre'] ?? '');
     // Tomamos la ruta que estaba guardada, para usarla si no suben nueva imagen
     $rutaExistente = trim($_POST['ruta_existente'] ?? '');
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         $errors[] = 'El nombre es obligatorio.';
     }
 
-    // 4) Manejar archivo nuevo
+    // Manejar archivo nuevo
     $nuevaRuta = $rutaExistente; // si no suben nada, seguimos con la ruta antigua
 
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
                 if (move_uploaded_file($tmpName, $destino)) {
                     $nuevaRuta = '/PROYECTO2DS6/img/categorias/' . $nuevoNombre;
-                    // Opcional: borrar la imagen anterior para no acumular
+                    // borrar la imagen anterior para no acumular
                     if ($rutaExistente && file_exists(__DIR__ . '/..' . $rutaExistente)) {
                         @unlink(__DIR__ . '/..' . $rutaExistente);
                     }
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         }
     }
 
-    // 5) Si no hay errores, actualizamos en BD
+    // Si no hay errores, actualizamos en BD
     if (empty($errors)) {
         $sql = "UPDATE categorias 
                 SET nombre = ?, imagen = ?, fecha_actualizacion = NOW() 

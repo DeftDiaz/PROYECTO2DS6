@@ -10,7 +10,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 $id = (int) $_GET['id'];
 
-// 1) Obtener la ruta de la imagen para borrarla del disco (opcional)
+// Obtener la ruta de la imagen para borrarla del disco (opcional)
 $sqlSel = "SELECT imagen FROM productos WHERE id = ?";
 $stmtSel = $mysqli->prepare($sqlSel);
 $stmtSel->bind_param('i', $id);
@@ -18,14 +18,14 @@ $stmtSel->execute();
 $res = $stmtSel->get_result();
 if ($res->num_rows === 1) {
     $prod = $res->fetch_assoc();
-    $rutaAntigua = $prod['imagen']; // p.ej. "/PROYECTO2DS6/img/productos/foo.jpg"
+    $rutaAntigua = $prod['imagen']; // ej. "/PROYECTO2DS6/img/productos/foo.jpg"
     if ($rutaAntigua && file_exists(__DIR__ . '/..' . $rutaAntigua)) {
         @unlink(__DIR__ . '/..' . $rutaAntigua);
     }
 }
 $stmtSel->close();
 
-// 2) Eliminar de la BD
+// Eliminar de la BD
 $sql = "DELETE FROM productos WHERE id = ?";
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {

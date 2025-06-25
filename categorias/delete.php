@@ -4,19 +4,19 @@
 require '../config/db.php';
 session_start();
 
-// 1) Solo Admin
+// Solo Admin
 if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== '01') {
     header('Location: ../catalogo/index.php');
     exit;
 }
 
-// 2) Validar ID
+// Validar ID
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("ID de categoría no válido.");
 }
 $id = (int) $_GET['id'];
 
-// 3) Ejecutar DELETE
+// Ejecutar DELETE
 $sql = "DELETE FROM categorias WHERE id = ?";
 $stmt = $mysqli->prepare($sql);
 if (!$stmt) {
